@@ -1,44 +1,53 @@
-﻿using GraphQLProject.Interfaces;
+﻿using GraphQLProject.Data;
+using GraphQLProject.Interfaces;
 using GraphQLProject.Models;
 
 namespace GraphQLProject.Services
 {
     public class MenuRepository : IMenuRepository
     {
-        private static List<Menu> MenuList = new List<Menu>()
+        private readonly GraphQLDbContext _dbContext;
+
+        public MenuRepository(GraphQLDbContext dbContext)
         {
-            new Menu() { Id = 1, Name = "Classic Burger", Description = "A juicy chicken burger with lettuce and cheese", Price = 8.99 },
-            new Menu() { Id = 2, Name = "Margherita Pizza", Description = "Tomato, mozzarella, and basil pizza", Price = 10.5 },
-            new Menu() { Id = 3, Name = "Grilled Chicken Salad", Description = "Fresh garden salad with grilled chicken", Price = 7.95},
-            new Menu() { Id = 4, Name = "Pasta Alfredo", Description = "Creamy Alfredo sauce with fettuccine pasta", Price = 12.75 },
-            new Menu() { Id = 5, Name = "Chocolate Brownie Sundae", Description = "Warm chocolate brownie with ice cream and fudge", Price = 6.99},
-        };
+            _dbContext = dbContext;
+        }
 
         public List<Menu> GetAllMenu()
         {
-            return MenuList;
+            return _dbContext.Menus.ToList();
         }
 
         public Menu GetMenuById(int id)
         {
-            return MenuList.Find(m=>m.Id == id);
+            return _dbContext.Menus.Find(id);
         }
 
         public Menu AddMenu(Menu menu)
         {
-            MenuList.Add(menu);
+            _dbContext.Menus.Add(menu);
+            _dbContext.SaveChanges();
             return menu;
         }
 
         public Menu UpdateMenu(int id, Menu menu)
         {
-            MenuList[id-1] = menu;
+            var menuResult = _dbContext.Menus.Find(id);
+
+            menuResult.Name = menu.Name;
+            menuResult.Description = menu.Description;
+            menuResult.Price = menu.Price;
+
+            _dbContext.SaveChanges();
             return menu;
         }
 
         public void DeleteMenu(int id)
         {
-            MenuList.RemoveAt(id - 1);
+            var menuResult = _dbContext.Menus.Find(id);
+
+            _dbContext.Menus.Remove(menuResult);
+            _dbContext.SaveChanges();
         }
     }
 }

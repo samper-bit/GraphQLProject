@@ -20,11 +20,18 @@ builder.Services.AddTransient<ICategoryRepository, CategoryRepository>();
 builder.Services.AddTransient<IReservationRepository, ReservationRepository>();
 
 builder.Services.AddTransient<MenuType>();
-builder.Services.AddTransient<MenuQuery>();
-builder.Services.AddTransient<MenuMutation>();
-builder.Services.AddTransient<MenuInputType>();
+builder.Services.AddTransient<CategoryType>();
+builder.Services.AddTransient<ReservationType>();
 
-builder.Services.AddTransient<ISchema,MenuSchema>();
+builder.Services.AddTransient<MenuQuery>();
+builder.Services.AddTransient<CategoryQuery>();
+builder.Services.AddTransient<ReservationQuery>();
+builder.Services.AddTransient<RootQuery>();
+
+//builder.Services.AddTransient<MenuMutation>();
+//builder.Services.AddTransient<MenuInputType>();
+
+builder.Services.AddTransient<ISchema, RootSchema>();
 
 builder.Services.AddGraphQL(b => b.AddAutoSchema<ISchema>().AddSystemTextJson());
 
